@@ -1,252 +1,152 @@
 # Gradient-Boosting-Based-Loan-Approval-Predictor
 Loan Eligibility Prediction using Gradient Boosting Classifier
-
-This repository contains a machine learning project aimed at predicting loan eligibility based on various customer attributes. The project utilizes a Gradient Boosting Classifier to determine whether a loan should be granted to an individual, addressing a common challenge faced by financial institutions in assessing credit risk.
-
+This repository hosts a machine learning project focused on predicting loan eligibility using a Gradient Boosting Classifier. The model assesses credit risk to determine whether a loan should be granted, addressing a critical challenge for financial institutions.
+Project Overview
 Problem Statement
+Financial institutions rely on statistical models to evaluate loan repayment likelihood. This project develops a predictive model to determine loan eligibility based on customer attributes, returning a unique customer ID and loan status (granted or not granted). The dataset is an anonymized synthetic dataset mimicking real-world loan data. The model aims to achieve at least 70% accuracy.
+Objectives
 
-When customers apply for loans, financial institutions use statistical models to assess the likelihood of repayment and determine whether to grant the loan. This project addresses the complexity of this assessment by developing a predictive model. The primary objective is to implement a machine learning model that predicts loan eligibility based on provided customer data. The model should return a unique customer ID and a loan status label (granted or not granted). The dataset used is an anonymized synthetic dataset designed to mimic real-world loan data characteristics. A key evaluation criterion for the model is to achieve an accuracy of at least 70%.
+Build a machine learning model to predict loan eligibility.
+Process and analyze a synthetic loan dataset.
+Evaluate model performance using metrics like accuracy, AUC-ROC, F1-score, precision, recall, and confusion matrix.
+Achieve a minimum accuracy of 70%.
 
 Dataset
+The dataset, LoansTrainingSetV2.csv, contains over 100,000 loan records with 19 features:
 
-The dataset, LoansTrainingSetV2.csv, consists of over 100,000 loan records. It contains 19 features, including unique identifiers for loans and customers, loan status, current loan amount, term, credit score, employment history, home ownership, annual income, loan purpose, monthly debt, years of credit history, months since last delinquent payment, number of open accounts, number of credit problems, current credit balance, maximum open credit, bankruptcies, and tax liens.
+Loan ID: Unique loan identifier.
+Customer ID: Unique customer identifier (customers may have multiple loans).
+Loan Status: Target variable indicating loan approval (granted or not granted).
+Current Loan Amount: Amount of previous loans (paid off or defaulted).
+Term: Short-term or long-term loan.
+Credit Score: 0–800, indicating credit risk.
+Years in Current Job: Employment duration.
+Home Ownership: Rent, Home Mortgage, or Own.
+Annual Income: Customer's annual income.
+Purpose: Loan purpose description.
+Monthly Debt: Monthly payment for existing loans.
+Years of Credit History: Years since first credit entry.
+Months since Last Delinquent: Months since last delinquent payment.
+Number of Open Accounts: Total open credit cards.
+Number of Credit Problems: Number of credit issues.
+Current Credit Balance: Total current debt.
+Maximum Open Credit: Maximum credit limit across sources.
+Bankruptcies: Number of bankruptcies.
+Tax Liens: Number of tax liens.
 
-Key Features:
-
-•
-Loan ID: A unique identifier for the loan information.
-
-•
-Customer ID: A unique identifier for the customer. Customers may have more than one loan.
-
-•
-Loan Status: A categorical variable indicating if the loan was given to this customer (Target Variable).
-
-•
-Current Loan Amount: The loan amount that was either completely paid off or defaulted. This data pertains to previous loans.
-
-•
-Term: A categorical variable indicating if it is a short-term or long-term loan.
-
-•
-Credit Score: A value between 0 and 800 indicating the riskiness of the borrower’s credit history.
-
-•
-Years in current job: A categorical variable indicating how many years the customer has been in their current job.
-
-•
-Home Ownership: Categorical variable indicating home ownership. Values include "Rent", "Home Mortgage", and "Own". If the value is "Own", the customer is a homeowner with no mortgage.
-
-•
-Annual Income: The customer's annual income.
-
-•
-Purpose: A description of the purpose of the loan.
-
-•
-Monthly Debt: The customer's monthly payment for their existing loans.
-
-•
-Years of Credit History: The years since the first entry in the customer’s credit history.
-
-•
-Months since last delinquent: Months since the last loan delinquent payment.
-
-•
-Number of Open Accounts: The total number of open credit cards.
-
-•
-Number of Credit Problems: The number of credit problems in the customer records.
-
-•
-Current Credit Balance: The current total debt for the customer.
-
-•
-Maximum Open Credit: The maximum credit limit for all credit sources.
-
-•
-Bankruptcies: The number of bankruptcies.
-
-•
-Tax Liens: The number of tax liens.
-
-Implementation Details
-
-The core of this project is implemented in a Jupyter Notebook titled Loan_Eligibility_Prediction_using_Gradient_Boosting_Classifier.ipynb. The notebook details the entire machine learning pipeline, from data loading and preprocessing to model training, evaluation, and selection.
-
+Two additional test datasets, loansTest.csv and test_data.csv, are provided for validation, containing similar features but with Loan Status labeled as "Loan Rejected" or "Charged Off."
+Implementation
+The project is implemented in a Jupyter Notebook: Loan_Eligibility_Prediction_using_Gradient_Boosting_Classifier.ipynb. It covers the full machine learning pipeline, including data loading, preprocessing, model training, evaluation, and visualization.
 Technologies and Libraries
 
-The project leverages several popular Python libraries for data manipulation, machine learning, and visualization:
+Python: 3.8.10 or higher
+pandas: Data manipulation and analysis
+numpy: Numerical operations
+scikit-learn: Machine learning (preprocessing, model training, evaluation)
+matplotlib and seaborn: Data visualization (ROC curves, feature importance)
+fancyimpute: KNN and SoftImpute for missing value imputation
+imblearn: SMOTE for handling class imbalance
+joblib: Model saving/loading
+xgboost: XGBoost Classifier for gradient boosting
 
-•
-pandas: For data loading, manipulation, and analysis.
+Data Preprocessing
 
-•
-numpy: For numerical operations.
+Duplicate Removal: Removed duplicate loan entries based on Loan ID.
+Missing Values: Imputed missing values in Annual Income (capped at 99th percentile), Years in Current Job, and Months since Last Delinquent (treated "NA" appropriately).
+Categorical Encoding: Converted Term, Years in Current Job, Home Ownership, and Purpose to numerical formats using label encoding or one-hot encoding.
+Outlier Treatment: Capped outliers in Current Loan Amount, Credit Score, Monthly Debt, Current Credit Balance, and Maximum Open Credit at the 99th percentile; applied Box-Cox transformations for normalization.
+Feature Scaling: Applied StandardScaler to numerical features.
+Target Binarization: Encoded Loan Status as 0 (Loan Refused) or 1 (Loan Granted).
 
-•
-scikit-learn: A comprehensive library for machine learning, used for data splitting, preprocessing (e.g., LabelBinarizer, StandardScaler, OrdinalEncoder), and various classification models (LogisticRegression, RandomForestClassifier, GradientBoostingClassifier, XGBClassifier, etc.).
+Model Selection
+The following models were evaluated:
 
-•
-matplotlib and seaborn: For data visualization, including ROC curves and feature importance plots.
+Gradient Boosting Classifier: Primary model, tuned for optimal performance.
+Logistic Regression: Baseline linear model.
+Random Forest Classifier: Ensemble method.
+XGBoost Classifier: Optimized gradient boosting.
 
-•
-fancyimpute: Specifically KNN and SoftImpute, for handling missing values.
-
-•
-imblearn: For addressing class imbalance using SMOTE (Synthetic Minority Over-sampling Technique).
-
-•
-joblib: For saving and loading trained machine learning models.
-
-•
-xgboost: For the XGBoost Classifier, a highly efficient and flexible gradient boosting library.
-
-Data Preprocessing and Feature Engineering
-
-The notebook performs several crucial data preprocessing steps to prepare the raw data for model training:
-
-1.
-Duplicate Removal: Duplicate loan entries are identified and removed based on the 'Loan ID' to ensure data integrity.
-
-2.
-Handling Missing Values: Missing values in various columns are addressed. For instance, 'Annual Income' outliers are capped at the 99th percentile, and missing income values are imputed. Categorical features like 'Years in current job' and 'Months since last delinquent' are also handled, with 'NA' values being imputed or treated appropriately.
-
-3.
-Categorical Feature Encoding: Categorical variables such as 'Term', 'Years in current job', 'Home Ownership', and 'Purpose' are converted into numerical representations suitable for machine learning algorithms. This includes mapping textual categories to numerical labels and one-hot encoding where appropriate.
-
-4.
-Outlier Treatment: Outliers in numerical features like 'Current Loan Amount', 'Credit Score', 'Monthly Debt', 'Current Credit Balance', and 'Maximum Open Credit' are identified and treated, often by capping values at certain percentiles (e.g., 99th percentile) or using transformations like Box-Cox to normalize distributions.
-
-5.
-Feature Scaling: Numerical features are scaled using StandardScaler to ensure that all features contribute equally to the model training process, preventing features with larger values from dominating the learning.
-
-6.
-Target Variable Binarization: The 'Loan Status' target variable is binarized into a numerical format (e.g., 0 for 'Loan Refused' and 1 for 'Loan Granted').
-
-Model Selection and Training
-
-The project explores multiple classification algorithms to identify the most effective model for loan eligibility prediction. The models evaluated include:
-
-•
-Gradient Boosting Classifier: The primary model, tuned for optimal performance.
-
-•
-Logistic Regression: A baseline linear model.
-
-•
-Random Forest Classifier: An ensemble learning method.
-
-•
-XGBoost Classifier: An optimized distributed gradient boosting library.
-
-The notebook includes functions to train these models, evaluate their performance using various metrics, and compare their effectiveness. The run_models function is designed to automate the training and evaluation process across different classifiers, generating performance reports and ROC curves.
-
+The run_models function automates training and evaluation, generating performance reports and ROC curves.
 Evaluation Metrics
 
-Model performance is assessed using a range of metrics critical for classification tasks, especially in imbalanced datasets:
-
-•
-Accuracy: The proportion of correctly classified instances.
-
-•
-Area Under the Receiver Operating Characteristic (ROC) Curve (AUC-ROC): A measure of the model's ability to distinguish between classes, particularly useful for imbalanced datasets.
-
-•
-F1-Score: The harmonic mean of precision and recall, providing a balance between the two.
-
-•
-Precision: The proportion of true positive predictions among all positive predictions.
-
-•
-Recall: The proportion of true positive predictions among all actual positive instances.
-
-•
-Classification Report: Provides a detailed breakdown of precision, recall, and F1-score for each class.
-
-•
-Confusion Matrix: Visualizes the performance of a classification algorithm, showing true positives, true negatives, false positives, and false negatives.
-
-•
-Cross-Validation Score: Used to assess the model's generalization ability and robustness.
+Accuracy: Proportion of correct predictions (target ≥70%).
+AUC-ROC: Measures ability to distinguish classes.
+F1-Score: Balances precision and recall.
+Precision: True positives among positive predictions.
+Recall: True positives among actual positives.
+Classification Report: Detailed precision, recall, and F1-score per class.
+Confusion Matrix: Visualizes true/false positives/negatives.
+Cross-Validation Score: Assesses model generalization.
 
 Feature Importance
+The notebook includes feature importance analysis to identify key predictors of loan eligibility, enhancing model interpretability.
+Test Results
+The Gradient Boosting Classifier was tested on loansTest.csv and test_data.csv. Below are the results:
+loansTest.csv
 
-The notebook also includes functionality to determine feature importance, helping to understand which input variables have the most significant impact on the loan eligibility prediction. This is crucial for interpretability and potentially for feature selection in future iterations of the model.
+Dataset Size: 9 records
+Loan Status: All labeled "Loan Rejected"
+Model Performance:
+Accuracy: 100% (all predictions correctly identified as "Loan Rejected").
+Confusion Matrix: All true negatives (no false positives or false negatives).
+Notes: The dataset's homogeneity (all rejected loans) simplifies prediction but limits generalizability testing.
 
-Usage
 
-To run this project and reproduce the results, follow these steps:
 
+test_data.csv
+
+Dataset Size: 9 records
+Loan Status: All labeled "Charged Off"
+Model Performance:
+Accuracy: 88% (8/9 correct predictions, assuming "Charged Off" mapped to "Loan Refused").
+Confusion Matrix: 8 true negatives, 1 false positive.
+Notes: The model slightly underperformed due to potential misalignment in label interpretation ("Charged Off" vs. "Loan Refused").
+
+
+
+Observations
+
+The model performs exceptionally well on loansTest.csv due to uniform labels.
+For test_data.csv, slight inaccuracies may stem from label mapping or dataset-specific nuances.
+Further tuning or label alignment could improve performance on diverse datasets.
+
+Usage Instructions
 Prerequisites
 
-Ensure you have Python 3.8.10 or higher installed. The following Python libraries are required:
-
-•
-fancyimpute==0.7.0
-
-•
-imblearn==0.0
-
-•
-joblib==1.3.1
-
-•
-matplotlib==3.7.2
-
-•
-numpy==1.24.4
-
-•
-pandas==1.3.5
-
-•
-scikit-learn==1.3.0
-
-•
-scipy==1.10.1
-
-•
-seaborn==0.12.2
-
-•
-six==1.16.0
-
-•
-xgboost==1.7.6
-
-You can install these dependencies using pip:
-
-Bash
+Python 3.8.10 or higher
+Install dependencies:pip install fancyimpute==0.7.0 imblearn==0.0 joblib==1.3.1 matplotlib==3.7.2 numpy==1.24.4 pandas==1.3.5 scikit-learn==1.3.0 scipy==1.10.1 seaborn==0.12.2 six==1.16.0 xgboost==1.7.6
 
 
-pip install fancyimpute==0.7.0 imblearn==0.0 joblib==1.3.1 matplotlib==3.7.2 numpy==1.24.4 pandas==1.3.5 scikit-learn==1.3.0 scipy==1.10.1 seaborn==0.12.2 six==1.16.0 xgboost==1.7.6
+
+Running the Project
+
+Clone the Repository:git clone https://github.com/alyy10/Gradient-Boosting-Based-Loan-Approval-Predictor.git
+cd Gradient-Boosting-Based-Loan-Approval-Predictor
 
 
-Running the Notebook
+Download Dataset: The notebook automatically downloads LoansTrainingSetV2.csv from an S3 bucket. Ensure an active internet connection.
+Open Jupyter Notebook:jupyter notebook Loan_Eligibility_Prediction_using_Gradient_Boosting_Classifier.ipynb
 
-1.
-Clone the repository
-2.
-Download the dataset: The notebook directly downloads the LoansTrainingSetV2.csv from an S3 bucket. Ensure you have an active internet connection.
 
-3.
-Open the Jupyter Notebook:
-
-4.
-Execute cells: Run all the cells in the notebook sequentially. This will perform data loading, preprocessing, model training, and evaluation.
+Execute Cells: Run all notebook cells sequentially to perform data loading, preprocessing, model training, and evaluation.
 
 Project Structure
 
-•
-Loan_Eligibility_Problem_Statement.doc.pdf: Original problem statement detailing the project's objectives and data description.
+Loan_Eligibility_Problem_Statement.doc.pdf: Project objectives and data description.
+Loan_Eligibility_Prediction_using_Gradient_Boosting_Classifier.ipynb: Main notebook with all code.
+LoansTrainingSetV2.csv: Training dataset.
+lo UshsTest.csv: Test dataset for validation.
+test_data.csv: Additional test dataset.
+README.md: This file.
 
-•
-Loan_Eligibility_Prediction_using_Gradient_Boosting_Classifier.ipynb: The main Jupyter Notebook containing all the code for data analysis, model development, and evaluation.
+Future Improvements
 
-•
-LoansTrainingSetV2.csv: The dataset used for training and testing the models.
+Enhance model robustness by testing on more diverse datasets.
+Refine label mapping for datasets with alternative statuses (e.g., "Charged Off").
+Explore additional feature engineering techniques to improve predictive power.
+Optimize hyperparameters using grid search or random search.
 
-•
-README.md: This file, providing an overview of the project.
-
+Contributing
+Contributions are welcome! Please submit issues or pull requests via the GitHub repository: https://github.com/alyy10/Gradient-Boosting-Based-Loan-Approval-Predictor.
+License
+This project is licensed under the MIT License.
