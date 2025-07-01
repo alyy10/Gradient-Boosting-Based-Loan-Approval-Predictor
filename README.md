@@ -1,189 +1,145 @@
-Loan Eligibility Prediction using Gradient Boosting Classifier
+# Loan Eligibility Prediction using Gradient Boosting Classifier
+
 A machine learning project to predict loan eligibility using a Gradient Boosting Classifier, addressing credit risk assessment for financial institutions.
-Table of Contents
 
-Project Overview
-Problem Statement
-Objectives
+---
 
+## Table of Contents
 
-Dataset
-Training Dataset
-Test Datasets
+- [Project Overview](#project-overview)
+- [Problem Statement & Objectives](#problem-statement--objectives)
+- [Dataset](#dataset)
+  - [Training Dataset](#training-dataset)
+  - [Test Datasets](#test-datasets)
+- [Implementation](#implementation)
+  - [Technologies and Libraries](#technologies-and-libraries)
+  - [Data Preprocessing](#data-preprocessing)
+  - [Model Selection](#model-selection)
+  - [Evaluation Metrics](#evaluation-metrics)
+  - [Feature Importance](#feature-importance)
+- [Test Results](#test-results)
+- [Usage Instructions](#usage-instructions)
+  - [Prerequisites](#prerequisites)
+  - [Running the Project](#running-the-project)
+- [Project Structure](#project-structure)
+- [Future Improvements](#future-improvements)
+- [Contributing](#contributing)
+- [License](#license)
 
+---
 
-Implementation
-Technologies and Libraries
-Data Preprocessing
-Model Selection
-Evaluation Metrics
-Feature Importance
+## Project Overview
 
+This project builds a machine learning model to predict loan eligibility based on customer attributes. It uses a synthetic dataset that simulates real-world loan data.
 
-Test Results
-loansTest.csv
-test_data.csv
+---
 
+## Problem Statement & Objectives
 
-Usage Instructions
-Prerequisites
-Running the Project
+Financial institutions rely on statistical models to estimate loan repayment likelihood.
 
+Objectives:
+- Develop a predictive model returning customer ID and loan status (granted or not granted)
+- Achieve at least 70% accuracy
+- Evaluate performance using metrics like AUC-ROC, F1-score, precision, recall, and confusion matrix
 
-Project Structure
-Future Improvements
-Contributing
-License
+---
 
-Project Overview
-Problem Statement
-Financial institutions use statistical models to assess loan repayment likelihood. This project develops a predictive model to determine loan eligibility based on customer attributes, returning a unique customer ID and loan status (granted or not granted). The dataset is synthetic, mimicking real-world loan data. The target is to achieve at least 70% accuracy.
-Objectives
+## Dataset
 
-Develop a machine learning model for loan eligibility prediction.
-Process and analyze a synthetic loan dataset.
-Evaluate model performance using accuracy, AUC-ROC, F1-score, precision, recall, and confusion matrix.
-Ensure model accuracy meets or exceeds 70%.
+### Training Dataset
 
-Dataset
-Training Dataset
+- File: `LoansTrainingSetV2.csv`
+- Records: Over 100,000
+- Features (19):
+  - Loan ID, Customer ID, Loan Status, Current Loan Amount, Term, Credit Score, Years in Current Job, Home Ownership, Annual Income, Purpose, Monthly Debt, Years of Credit History, Months since Last Delinquent, Number of Open Accounts, Number of Credit Problems, Current Credit Balance, Maximum Open Credit, Bankruptcies, Tax Liens
 
-File: LoansTrainingSetV2.csv
-Size: Over 100,000 loan records
-Features (19):
-Loan ID: Unique loan identifier
-Customer ID: Unique customer identifier (multiple loans possible per customer)
-Loan Status: Target variable (granted or not granted)
-Current Loan Amount: Amount of prior loans (paid off or defaulted)
-Term: Short-term or long-term
-Credit Score: 0–800, indicating credit risk
-Years in Current Job: Employment duration
-Home Ownership: Rent, Home Mortgage, or Own
-Annual Income: Customer's annual income
-Purpose: Loan purpose
-Monthly Debt: Monthly payment for existing loans
-Years of Credit History: Years since first credit entry
-Months since Last Delinquent: Months since last delinquent payment
-Number of Open Accounts: Open credit cards
-Number of Credit Problems: Credit issues
-Current Credit Balance: Total current debt
-Maximum Open Credit: Maximum credit limit
-Bankruptcies: Number of bankruptcies
-Tax Liens: Number of tax liens
+### Test Datasets
 
+- `loansTest.csv`: 9 records, all labeled "Loan Rejected"
+- `test_data.csv`: 9 records, all labeled "Charged Off"
 
+---
 
-Test Datasets
+## Implementation
 
-loansTest.csv: 9 records, all labeled "Loan Rejected"
-test_data.csv: 9 records, all labeled "Charged Off"
+### Technologies and Libraries
 
-Implementation
-Technologies and Libraries
+- Python 3.8.10+
+- pandas, numpy, scikit-learn
+- matplotlib, seaborn
+- fancyimpute (KNN, SoftImpute)
+- imblearn (SMOTE)
+- joblib
+- xgboost
 
-Python: 3.8.10+
-pandas: Data manipulation
-numpy: Numerical operations
-scikit-learn: Machine learning (preprocessing, training, evaluation)
-matplotlib, seaborn: Visualization (ROC curves, feature importance)
-fancyimpute: KNN and SoftImpute for missing values
-imblearn: SMOTE for class imbalance
-joblib: Model persistence
-xgboost: XGBoost Classifier
+### Data Preprocessing
 
-Data Preprocessing
+- Removed duplicates by Loan ID
+- Imputed missing values (Annual Income, Years in Current Job, Months since Last Delinquent)
+- Label/one-hot encoding for categorical features
+- Outlier treatment (capped at 99th percentile, Box-Cox transformations)
+- Feature scaling with StandardScaler
+- Target encoding: Loan Status → 0 (Refused) / 1 (Granted)
 
-Duplicate Removal: Removed duplicates using Loan ID.
-Missing Values: Imputed Annual Income (capped at 99th percentile), Years in Current Job, and Months since Last Delinquent (handled "NA").
-Categorical Encoding: Converted Term, Years in Current Job, Home Ownership, and Purpose to numerical formats (label or one-hot encoding).
-Outlier Treatment: Capped outliers in Current Loan Amount, Credit Score, Monthly Debt, Current Credit Balance, and Maximum Open Credit at 99th percentile; applied Box-Cox transformations.
-Feature Scaling: Used StandardScaler for numerical features.
-Target Binarization: Encoded Loan Status as 0 (Refused) or 1 (Granted).
+### Model Selection
 
-Model Selection
+- Primary: Gradient Boosting Classifier (tuned)
+- Other models: Logistic Regression, Random Forest Classifier, XGBoost Classifier
+- Automation: `run_models` function for training, evaluation, and ROC curves
 
-Primary Model: Gradient Boosting Classifier (tuned)
-Other Models:
-Logistic Regression (baseline)
-Random Forest Classifier
-XGBoost Classifier
+### Evaluation Metrics
 
+- Accuracy (≥70%)
+- AUC-ROC
+- F1-Score
+- Precision
+- Recall
+- Confusion Matrix
+- Cross-validation score
 
-Automation: run_models function for training and evaluation with performance reports and ROC curves.
+### Feature Importance
 
-Evaluation Metrics
+Identifies key predictors to explain the model.
 
-Accuracy: Correct predictions (target ≥70%)
-AUC-ROC: Class discrimination ability
-F1-Score: Precision-recall balance
-Precision: True positives among positive predictions
-Recall: True positives among actual positives
-Classification Report: Per-class precision, recall, F1-score
-Confusion Matrix: True/false positives/negatives
-Cross-Validation Score: Model generalization
+---
 
-Feature Importance
-Analyzed to identify key predictors, enhancing model interpretability.
-Test Results
-loansTest.csv
+## Test Results
 
-Size: 9 records
-Loan Status: All "Loan Rejected"
-Performance:
-Accuracy: 100% (all correctly predicted)
-Confusion Matrix: All true negatives
-Notes: Homogeneous labels simplify prediction but limit generalizability.
+| Dataset        | Records | Accuracy | Notes                                       |
+|----------------|--------:|--------:|----------------------------------------------|
+| loansTest.csv  |       9 |   100%   | All correctly predicted (homogeneous labels) |
+| test_data.csv  |       9 |    88%   | 8/9 correct; slight label mapping issue      |
 
+---
 
+## Usage Instructions
 
-test_data.csv
+### Prerequisites
 
-Size: 9 records
-Loan Status: All "Charged Off"
-Performance:
-Accuracy: 88% (8/9 correct, assuming "Charged Off" = "Loan Refused")
-Confusion Matrix: 8 true negatives, 1 false positive
-Notes: Slight inaccuracies due to potential label mapping issues.
+Python 3.8.10+  
+Install dependencies:
 
+```bash
+pip install fancyimpute==0.7.0 imblearn==0.0 joblib==1.3.1 matplotlib==3.7.2 numpy==1.24.4 pandas==1.3.5 scikit-learn==1.3.0 scipy==1.10.1 seaborn==0.12.2 six==1.16.0 xgboost==1.7.6
 
+### Running the Project
 
-Usage Instructions
-Prerequisites
-
-Python 3.8.10+
-Install dependencies:pip install fancyimpute==0.7.0 imblearn==0.0 joblib==1.3.1 matplotlib==3.7.2 numpy==1.24.4 pandas==1.3.5 scikit-learn==1.3.0 scipy==1.10.1 seaborn==0.12.2 six==1.16.0 xgboost==1.7.6
-
-
-
-Running the Project
-
-Clone Repository:git clone https://github.com/alyy10/Gradient-Boosting-Based-Loan-Approval-Predictor.git
+# Clone the repository
+git clone https://github.com/alyy10/Gradient-Boosting-Based-Loan-Approval-Predictor.git
 cd Gradient-Boosting-Based-Loan-Approval-Predictor
 
+# Dataset is auto-downloaded via S3 (requires internet)
+# Run notebook
+jupyter notebook Loan_Eligibility_Prediction_using_Gradient_Boosting_Classifier.ipynb
 
-Dataset Access: LoansTrainingSetV2.csv is downloaded automatically via S3 (requires internet).
-Run Notebook:jupyter notebook Loan_Eligibility_Prediction_using_Gradient_Boosting_Classifier.ipynb
 
+### Project Structure
 
-Execute Cells: Run all cells sequentially for data processing, training, and evaluation.
+├── Loan_Eligibility_Problem_Statement.doc.pdf
+├── Loan_Eligibility_Prediction_using_Gradient_Boosting_Classifier.ipynb
+├── LoansTrainingSetV2.csv
+├── loansTest.csv
+├── test_data.csv
+└── README.md
 
-Project Structure
-
-Loan_Eligibility_Problem_Statement.doc.pdf: Project objectives and data details
-Loan_Eligibility_Prediction_using_Gradient_Boosting_Classifier.ipynb: Core notebook
-LoansTrainingSetV2.csv: Training dataset
-loansTest.csv: Test dataset
-test_data.csv: Additional test dataset
-README.md: This file
-
-Future Improvements
-
-Test on diverse datasets for robustness.
-Refine label mapping for alternative statuses (e.g., "Charged Off").
-Explore advanced feature engineering.
-Optimize hyperparameters via grid or random search.
-
-Contributing
-Submit issues or pull requests at: https://github.com/alyy10/Gradient-Boosting-Based-Loan-Approval-Predictor.
-License
-MIT License
